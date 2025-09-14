@@ -165,25 +165,36 @@ function AuthButtonImpl({ user, onLoginSuccess, onLogout, hideButton = false }, 
       if (window.google?.accounts?.oauth2) {
         const client = window.google.accounts.oauth2.initTokenClient({
           client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-          scope: 'https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/calendar.events',
+          scope: 'openid email profile https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/calendar.events',
           prompt: 'consent', // Always show consent screen
-          callback: (tokenResponse) => {
-            if (tokenResponse.access_token) {
-              console.log('✅ Gmail access token received!')
-              console.log('🔑 Access token length:', tokenResponse.access_token.length)
-
-              onLoginSuccess({
-                user: {
-                  name: userPayload.name,
-                  email: userPayload.email,
-                  picture: userPayload.picture
-                },
-                access_token: tokenResponse.access_token
-              })
-            } else {
+          callback: async (tokenResponse) => {
+            if (!tokenResponse.access_token) {
               console.error('❌ No access token received - Gmail access is required')
               alert('Gmail access is required for SwipeMail to work. Please try signing in again and grant permissions.')
+              return
             }
+            console.log('✅ Gmail access token received!')
+            console.log('🔑 Access token length:', tokenResponse.access_token.length)
+
+            // Fetch userinfo to ensure we have a reliable avatar URL
+            let profile = null
+            try {
+              const resp = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+              })
+              if (resp.ok) profile = await resp.json()
+            } catch (e) {
+              console.warn('Failed to fetch userinfo; using JWT payload', e)
+            }
+
+            onLoginSuccess({
+              user: {
+                name: profile?.name || userPayload.name || 'User',
+                email: profile?.email || userPayload.email,
+                picture: profile?.picture || userPayload.picture || ''
+              },
+              access_token: tokenResponse.access_token
+            })
           },
           error_callback: (error) => {
             console.error('❌ Gmail access denied or failed:', error)
@@ -236,7 +247,13 @@ function AuthButtonImpl({ user, onLoginSuccess, onLogout, hideButton = false }, 
     <div className="auth-button">
       {user ? (
         <div className="user-info">
-          <img src={user.picture} alt={user.name} className="user-avatar" />
+          <img
+            src={user.picture || ''}
+            alt={user.name}
+            className="user-avatar"
+            referrerPolicy="no-referrer"
+            onError={(e) => { e.currentTarget.style.display = 'none' }}
+          />
           <span className="user-name">{user.name}</span>
           <button onClick={handleSignOut} className="btn">Sign out</button>
         </div>
