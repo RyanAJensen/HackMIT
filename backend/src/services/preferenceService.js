@@ -34,17 +34,19 @@ class PreferenceService {
       const data = await fs.readFile(profilePath, 'utf8')
       const profile = JSON.parse(data)
 
-      // Ensure profile has required structure and migrate from v1.0 if needed
+      // Ensure profile has required structure and correct types
+      // Note: spread raw profile first, then override with normalized fields
       const migratedProfile = {
+        ...profile,
         userId,
         preferences: profile.preferences || {},
         totalGood: profile.totalGood || 0,
         totalBad: profile.totalBad || 0,
+        // Always coerce vocabulary to a Set (JSON stores as array)
         vocabulary: new Set(profile.vocabulary || []),
         emailsProcessed: profile.emailsProcessed || 0,
         lastUpdated: profile.lastUpdated || new Date().toISOString(),
-        version: profile.version || '1.0',
-        ...profile
+        version: profile.version || '1.0'
       }
 
       // Migrate from v1.0 to v2.0 format if needed
@@ -212,6 +214,10 @@ class PreferenceService {
 
     try {
       const profile = await this.loadProfile(userId)
+      // Defensive: ensure vocabulary is a Set
+      if (!(profile.vocabulary instanceof Set)) {
+        profile.vocabulary = new Set(Array.isArray(profile.vocabulary) ? profile.vocabulary : [])
+      }
 
       const isGoodSwipe = action === 'right' || action === 'interested'
 

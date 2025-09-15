@@ -269,6 +269,19 @@ function App() {
       unread: { id: '1d', label: 'Last 24 hours', shortLabel: '24h', icon: '🕐', days: 1 },
     }))
 
+    // Default to Unread stream immediately after login
+    const unreadStream = {
+      id: 'unread',
+      name: 'Unread Emails',
+      description: 'Recent unread emails (chronological)',
+      icon: '📬',
+      query: 'is:unread'
+    }
+    setCurrentFolder('STREAM')
+    setCurrentStream(unreadStream)
+    // Kick off loading for unread stream
+    handleStreamChange(unreadStream)
+
     // Save to cookies with 7-day expiry
     Cookies.set('swipemail_token', credentialResponse.access_token, {
       expires: 7,
@@ -359,6 +372,7 @@ function App() {
       const parseToDateTime = (s) => {
         if (!s) return null
         const DEFAULT_YEAR = 2025
+        const DEFAULT_MONTH_INDEX = 8 // September (0-based)
         let str = String(s).trim()
         // Normalize common noise and ordinal suffixes
         str = str
@@ -417,29 +431,47 @@ function App() {
           if (!isNaN(d.getTime())) return d
         }
 
-        // If no 4-digit year present, append default year and try parse
-        if (!/\b\d{4}\b/.test(str)) {
+        // If no 4-digit year present, append default year and try parse first
+        const hasYearToken = /\b\d{4}\b/.test(str)
+        if (!hasYearToken) {
           const withDefaultYear = new Date(`${str} ${DEFAULT_YEAR}`)
           if (!isNaN(withDefaultYear.getTime())) return withDefaultYear
         }
 
-        // Fallback: try native parse (for fully specified strings)
-        const d = new Date(str)
-        return isNaN(d.getTime()) ? null : d
-      }
-      let startDt = parseToDateTime(result?.start_time) || new Date()
-      let endDt = parseToDateTime(result?.end_time) || new Date(startDt.getTime() + 60 * 60 * 1000)
+        // If still ambiguous and no explicit month provided, default month to September
+        const hasMonthName = /(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)/i.test(str)
+        const hasNumericMonth = /\b\d{1,2}[\/-]\d{1,2}\b/.test(str) || /^\d{4}-\d{2}-\d{2}$/.test(str)
+        if (!hasMonthName && !hasNumericMonth) {
+          // Try to extract a day and optional time
+          const mDayTime = str.match(/^(?:on\s+)?(\d{1,2})(?:\s+(.+))?$/i)
+          const day = mDayTime ? Math.max(1, Math.min(31, parseInt(mDayTime[1], 10))) : 1
+          const tail = (mDayTime && mDayTime[2]) ? mDayTime[2] : ''
+          const candidate = `Sep ${String(day)}, ${hasYearToken ? '' : DEFAULT_YEAR}${tail ? ` ${tail}` : ''}`.trim()
+          const d = new Date(candidate)
+          if (!isNaN(d.getTime())) return d
+          // Fallback to 9:00 if time still unparsable
+          return new Date(`${DEFAULT_YEAR}-09-${String(day).padStart(2,'0')}T09:00:00`)
+        }
 
-      // If the source email text had no explicit year but the AI injected a different year (e.g., 2023), force default
-      const DEFAULT_YEAR = 2025
-      if (!sourceHasYear) {
-        if (startDt && startDt.getFullYear() !== DEFAULT_YEAR) {
-          startDt = new Date(DEFAULT_YEAR, startDt.getMonth(), startDt.getDate(), startDt.getHours(), startDt.getMinutes(), startDt.getSeconds(), startDt.getMilliseconds())
+        // Fallback: try native parse (for fully specified strings)
+        let d = new Date(str)
+        if (isNaN(d.getTime())) return null
+
+        // Enforce defaults if AI injected an earlier year or month was missing
+        const parsedYear = d.getFullYear()
+        if (!hasYearToken || parsedYear < DEFAULT_YEAR) {
+          d = new Date(DEFAULT_YEAR, d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds())
         }
-        if (endDt && endDt.getFullYear() !== DEFAULT_YEAR) {
-          endDt = new Date(DEFAULT_YEAR, endDt.getMonth(), endDt.getDate(), endDt.getHours(), endDt.getMinutes(), endDt.getSeconds(), endDt.getMilliseconds())
+        if (!hasMonthName && !hasNumericMonth) {
+          d = new Date(d.getFullYear(), DEFAULT_MONTH_INDEX, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds())
         }
+        return d
       }
+      // Prefer ISO fields provided by Cerebras; fall back to parsing text
+      let startDt = result?.start_time_iso ? new Date(result.start_time_iso) : parseToDateTime(result?.start_time)
+      if (!startDt || isNaN(startDt.getTime())) startDt = new Date()
+      let endDt = result?.end_time_iso ? new Date(result.end_time_iso) : parseToDateTime(result?.end_time)
+      if (!endDt || isNaN(endDt.getTime())) endDt = new Date(startDt.getTime() + 60 * 60 * 1000)
       const draft = {
         summary: title,
         description: desc,

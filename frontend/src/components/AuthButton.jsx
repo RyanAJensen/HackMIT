@@ -165,21 +165,32 @@ function AuthButtonImpl({ user, onLoginSuccess, onLogout, hideButton = false }, 
       if (window.google?.accounts?.oauth2) {
         const client = window.google.accounts.oauth2.initTokenClient({
           client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-          scope: 'https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/calendar.events',
+          // Include profile scopes so we can reliably fetch the user's picture
+          scope: 'openid email profile https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/calendar.events',
           prompt: 'consent', // Always show consent screen
           callback: (tokenResponse) => {
             if (tokenResponse.access_token) {
               console.log('✅ Gmail access token received!')
               console.log('🔑 Access token length:', tokenResponse.access_token.length)
 
-              onLoginSuccess({
-                user: {
-                  name: userPayload.name,
-                  email: userPayload.email,
-                  picture: userPayload.picture
-                },
-                access_token: tokenResponse.access_token
+              const finish = (profileExtra) => {
+                onLoginSuccess({
+                  user: {
+                    name: (profileExtra?.name || profileExtra?.given_name || userPayload.name) || 'User',
+                    email: profileExtra?.email || userPayload.email,
+                    picture: profileExtra?.picture || userPayload.picture || ''
+                  },
+                  access_token: tokenResponse.access_token
+                })
+              }
+
+              // Try to fetch profile to ensure we have a picture URL
+              fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
               })
+              .then(r => r.ok ? r.json() : null)
+              .then(profile => finish(profile))
+              .catch(() => finish(null))
             } else {
               console.error('❌ No access token received - Gmail access is required')
               alert('Gmail access is required for SwipeMail to work. Please try signing in again and grant permissions.')
@@ -236,7 +247,12 @@ function AuthButtonImpl({ user, onLoginSuccess, onLogout, hideButton = false }, 
     <div className="auth-button">
       {user ? (
         <div className="user-info">
-          <img src={user.picture} alt={user.name} className="user-avatar" />
+          <img
+            src={user.picture || 'https://www.gravatar.com/avatar/?d=mp&s=64'}
+            alt={user.name}
+            className="user-avatar"
+            onError={(e) => { e.currentTarget.src = 'https://www.gravatar.com/avatar/?d=mp&s=64' }}
+          />
           <span className="user-name">{user.name}</span>
           <button onClick={handleSignOut} className="btn">Sign out</button>
         </div>

@@ -424,24 +424,28 @@ Example responses:
    * Returns JSON: { has_event, event_title, start_time, end_time, timezone, location, confidence, brief_reason }
    */
   async extractEventFromEmail(email) {
-    const buildPrompt = ({ subject = '', from = '', body = '' }) => `You are an assistant that extracts event information from email text.
+    const nowIso = new Date().toISOString()
+    const buildPrompt = ({ subject = '', from = '', body = '' }) => `You are an assistant that extracts calendar event information from email text.
 Return ONLY strict JSON with this schema:
 {
   "has_event": boolean,
   "event_title": string | null,
-  "start_time": string | null,
-  "end_time": string | null,
-  "timezone": string | null,
+  "start_time": string | null,               // human text if present in email
+  "end_time": string | null,                 // human text if present in email
+  "start_time_iso": string | null,           // inferred full ISO 8601 date-time with timezone
+  "end_time_iso": string | null,             // inferred full ISO 8601 date-time with timezone
+  "timezone": string | null,                 // IANA tz like "America/New_York" if determinable
   "location": string | null,
-  "confidence": number,
+  "confidence": number,                      // 0-1
   "brief_reason": string
 }
 
-Rules:
-- If no event is present, set has_event=false and others to null except confidence and brief_reason.
-- If only a date is known (no time), provide ISO date and set missing parts to null.
-- If a range is implied but only start is known, set end_time to null.
-- Do not include any extra text before or after the JSON.
+Important rules:
+- Today is ${nowIso}. Use this to infer the correct year and month if missing.
+- If the email omits a year or month, infer the most likely upcoming date in the future. Prefer the next occurrence relative to today. If the date this year has already passed, use next year.
+- If a time is missing, default to a reasonable hour (e.g., 09:00) and include the chosen assumptions in brief_reason.
+- If a range is implied but only start is known, set end_time_iso to null.
+- Always populate start_time_iso (and end_time_iso if applicable) as ISO 8601 strings. Do not include extra commentary outside JSON.
 
 Email context:
 From: ${from}

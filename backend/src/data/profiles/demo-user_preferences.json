@@ -2,12 +2,12 @@
   "userId": "demo-user",
   "preferences": {
     "technology": {
-      "good": 3,
+      "good": 7,
       "bad": 5
     },
     "career": {
-      "good": 2,
-      "bad": 1
+      "good": 7,
+      "bad": 2
     },
     "business": {
       "good": 1,
@@ -22,28 +22,28 @@
       "bad": 3
     },
     "newsletter": {
-      "good": 0,
-      "bad": 4
+      "good": 1,
+      "bad": 5
     },
     "urgent": {
       "good": 0,
       "bad": 1
     },
     "announcement": {
-      "good": 1,
-      "bad": 2
+      "good": 7,
+      "bad": 8
     },
     "security": {
       "good": 0,
       "bad": 1
     },
     "informational": {
-      "good": 4,
-      "bad": 6
+      "good": 12,
+      "bad": 13
     },
     "education": {
-      "good": 0,
-      "bad": 1
+      "good": 6,
+      "bad": 5
     },
     "awareness": {
       "good": 0,
@@ -51,7 +51,7 @@
     },
     "professional_development": {
       "good": 0,
-      "bad": 1
+      "bad": 2
     },
     "online_safety": {
       "good": 0,
@@ -70,8 +70,8 @@
       "bad": 3
     },
     "industry": {
-      "good": 1,
-      "bad": 1
+      "good": 2,
+      "bad": 3
     },
     "limited_time_offer": {
       "good": 1,
@@ -126,7 +126,7 @@
       "bad": 0
     },
     "gaming": {
-      "good": 1,
+      "good": 3,
       "bad": 0
     },
     "digital": {
@@ -138,7 +138,7 @@
       "bad": 1
     },
     "digital_media": {
-      "good": 1,
+      "good": 2,
       "bad": 1
     },
     "leisure": {
@@ -151,7 +151,7 @@
     },
     "email": {
       "good": 1,
-      "bad": 0
+      "bad": 1
     },
     "unknown": {
       "good": 1,
@@ -166,7 +166,7 @@
       "bad": 1
     },
     "self-improvement": {
-      "good": 0,
+      "good": 1,
       "bad": 1
     },
     "motivational": {
@@ -176,10 +176,254 @@
     "online": {
       "good": 0,
       "bad": 1
+    },
+    "environmental_organization": {
+      "good": 0,
+      "bad": 1
+    },
+    "volunteer_opportunities": {
+      "good": 1,
+      "bad": 1
+    },
+    "community_service": {
+      "good": 0,
+      "bad": 2
+    },
+    "outdoor_activities": {
+      "good": 0,
+      "bad": 1
+    },
+    "student_life": {
+      "good": 0,
+      "bad": 3
+    },
+    "non_profit": {
+      "good": 0,
+      "bad": 4
+    },
+    "event_invitation": {
+      "good": 0,
+      "bad": 1
+    },
+    "recruitment": {
+      "good": 0,
+      "bad": 1
+    },
+    "ecological_conservation": {
+      "good": 0,
+      "bad": 1
+    },
+    "arts_entertainment": {
+      "good": 0,
+      "bad": 1
+    },
+    "community_building": {
+      "good": 2,
+      "bad": 1
+    },
+    "event": {
+      "good": 1,
+      "bad": 1
+    },
+    "campus_activity": {
+      "good": 0,
+      "bad": 1
+    },
+    "dance": {
+      "good": 0,
+      "bad": 1
+    },
+    "south_asian_culture": {
+      "good": 0,
+      "bad": 1
+    },
+    "religion": {
+      "good": 0,
+      "bad": 2
+    },
+    "spirituality": {
+      "good": 1,
+      "bad": 1
+    },
+    "personal_development": {
+      "good": 1,
+      "bad": 1
+    },
+    "self_improvement": {
+      "good": 0,
+      "bad": 1
+    },
+    "philosophy": {
+      "good": 0,
+      "bad": 1
+    },
+    "inspirational": {
+      "good": 1,
+      "bad": 0
+    },
+    "email_marketing": {
+      "good": 1,
+      "bad": 0
+    },
+    "events": {
+      "good": 1,
+      "bad": 3
+    },
+    "social": {
+      "good": 1,
+      "bad": 2
+    },
+    "campus_life": {
+      "good": 1,
+      "bad": 1
+    },
+    "student_organization": {
+      "good": 0,
+      "bad": 1
+    },
+    "ai_development": {
+      "good": 2,
+      "bad": 0
+    },
+    "collaboration": {
+      "good": 2,
+      "bad": 0
+    },
+    "event_planning": {
+      "good": 3,
+      "bad": 0
+    },
+    "job_opportunity": {
+      "good": 2,
+      "bad": 0
+    },
+    "deadline": {
+      "good": 2,
+      "bad": 1
+    },
+    "community": {
+      "good": 0,
+      "bad": 1
+    },
+    "prayer": {
+      "good": 0,
+      "bad": 1
+    },
+    "industry_specific": {
+      "good": 0,
+      "bad": 1
+    },
+    "venture_capital": {
+      "good": 0,
+      "bad": 1
+    },
+    "student_organizations": {
+      "good": 0,
+      "bad": 1
+    },
+    "princeton_university": {
+      "good": 0,
+      "bad": 1
+    },
+    "based": {
+      "good": 0,
+      "bad": 1
+    },
+    "the": {
+      "good": 0,
+      "bad": 1
+    },
+    "provided": {
+      "good": 0,
+      "bad": 1
+    },
+    "content": {
+      "good": 0,
+      "bad": 1
+    },
+    "difficult": {
+      "good": 0,
+      "bad": 1
+    },
+    "determine": {
+      "good": 0,
+      "bad": 1
+    },
+    "conference": {
+      "good": 1,
+      "bad": 1
+    },
+    "energy": {
+      "good": 1,
+      "bad": 1
+    },
+    "academic": {
+      "good": 2,
+      "bad": 0
+    },
+    "career_development": {
+      "good": 1,
+      "bad": 0
+    },
+    "academia": {
+      "good": 0,
+      "bad": 1
+    },
+    "networking": {
+      "good": 1,
+      "bad": 1
+    },
+    "welcome_email": {
+      "good": 1,
+      "bad": 0
+    },
+    "google": {
+      "good": 1,
+      "bad": 0
+    },
+    "developer": {
+      "good": 1,
+      "bad": 0
+    },
+    "profile": {
+      "good": 1,
+      "bad": 0
+    },
+    "onboarding": {
+      "good": 1,
+      "bad": 0
+    },
+    "tutorial": {
+      "good": 1,
+      "bad": 0
+    },
+    "engineering": {
+      "good": 1,
+      "bad": 0
+    },
+    "higher_education": {
+      "good": 1,
+      "bad": 0
+    },
+    "industry_event": {
+      "good": 1,
+      "bad": 0
+    },
+    "silicon valley": {
+      "good": 1,
+      "bad": 0
+    },
+    "startup": {
+      "good": 1,
+      "bad": 0
+    },
+    "leadership": {
+      "good": 1,
+      "bad": 0
     }
   },
-  "totalGood": 35,
-  "totalBad": 61,
+  "totalGood": 110,
+  "totalBad": 135,
   "vocabulary": [
     "technology",
     "career",
@@ -224,9 +468,70 @@
     "celebratory",
     "self-improvement",
     "motivational",
-    "online"
+    "online",
+    "environmental_organization",
+    "volunteer_opportunities",
+    "community_service",
+    "outdoor_activities",
+    "student_life",
+    "non_profit",
+    "event_invitation",
+    "recruitment",
+    "ecological_conservation",
+    "arts_entertainment",
+    "community_building",
+    "event",
+    "campus_activity",
+    "dance",
+    "south_asian_culture",
+    "religion",
+    "spirituality",
+    "personal_development",
+    "self_improvement",
+    "philosophy",
+    "inspirational",
+    "email_marketing",
+    "events",
+    "social",
+    "campus_life",
+    "student_organization",
+    "ai_development",
+    "collaboration",
+    "event_planning",
+    "job_opportunity",
+    "deadline",
+    "community",
+    "prayer",
+    "industry_specific",
+    "venture_capital",
+    "student_organizations",
+    "princeton_university",
+    "based",
+    "the",
+    "provided",
+    "content",
+    "difficult",
+    "determine",
+    "conference",
+    "energy",
+    "academic",
+    "career_development",
+    "academia",
+    "networking",
+    "welcome_email",
+    "google",
+    "developer",
+    "profile",
+    "onboarding",
+    "tutorial",
+    "engineering",
+    "higher_education",
+    "industry_event",
+    "silicon valley",
+    "startup",
+    "leadership"
   ],
-  "emailsProcessed": 15,
-  "lastUpdated": "2025-09-14T13:30:37.458Z",
+  "emailsProcessed": 31,
+  "lastUpdated": "2025-09-14T14:43:38.890Z",
   "version": "2.0"
 }
